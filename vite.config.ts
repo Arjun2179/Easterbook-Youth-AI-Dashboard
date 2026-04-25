@@ -7,7 +7,7 @@ export default defineConfig({
     tailwindcss(),
     react(),
   ],
-  base: process.env.NODE_ENV === 'production' ? '/dashboard/' : '/',
+  base: '/',
   server: {
     port: 5000,
     host: true,

@@ -6,7 +6,21 @@ const CSV_PATH = process.env.CSV_PATH || path.join(__dirname, '../../Arjun/synth
 const OUT_DIR = path.join(__dirname, '../public/data');
 
 if (!fs.existsSync(CSV_PATH)) {
+  // If the JSON data files were already pre-generated and committed to the repo,
+  // skip regeneration so CI / Vercel builds succeed without the source CSV.
+  const requiredFiles = [
+    'hero_stats.json', 'daily_totals.json', 'waffle.json', 'slope.json',
+    'session_buckets.json', 'breaks_buckets.json', 'reliance_dist.json',
+    'cognitive_by_reliance.json', 'social_by_reliance.json', 'raw_rows.json',
+  ];
+  const allPresent = requiredFiles.every(f => fs.existsSync(path.join(OUT_DIR, f)));
+  if (allPresent) {
+    console.log(`CSV not found at: ${CSV_PATH}`);
+    console.log('Pre-generated JSON data files already exist — skipping preprocessing.');
+    process.exit(0);
+  }
   console.error(`CSV file not found at: ${CSV_PATH}`);
+  console.error('Run the script locally with the CSV present to generate the data files, then commit them.');
   process.exit(1);
 }
 
